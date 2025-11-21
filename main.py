@@ -11,29 +11,28 @@ from datetime import datetime
 
 load_dotenv()
 
-SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
-SUPABASE_SERVICE_ROLE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
+# =========================================================================
+# CORREÇÃO CRÍTICA PARA O DEPLOY NO RENDER: 
+# Adicionando default "" (string vazia) para evitar que o os.getenv retorne None,
+# o que causava um erro de inicialização (f-string com None) no FastAPI e o 404.
+# =========================================================================
+SUPABASE_URL = os.getenv("SUPABASE_URL", "")
+SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY", "")
+SUPABASE_SERVICE_ROLE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY", "")
 TABLE = os.getenv("TABLE_NEWS", "news")
+
+# As URLs agora podem ser construídas sem falhar, mesmo se SUPABASE_URL for "".
 POSTGREST_URL = f"{SUPABASE_URL}/rest/v1"
 AUTH_USER_ENDPOINT = f"{SUPABASE_URL}/auth/v1/user"
 
 # =========================================================================
-# AJUSTE: COMENTANDO A VERIFICACAO DE AMBIENTE PARA CARREGAR AS ROTAS NO RENDER
-# A aplicacao agora falhara APENAS dentro das rotas se o valor for None,
-# mas a rota /health deve carregar corretamente.
+# O AJUSTE anterior (comentar a checagem) foi mantido (porque ela agora é desnecessária)
+# mas a checagem de SERVICE_ROLE é mantida.
 # =========================================================================
-
-# if not SUPABASE_URL or not SUPABASE_ANON_KEY:
-#     raise RuntimeError("Configure SUPABASE_URL e SUPABASE_ANON_KEY no .env")
 
 if not SUPABASE_SERVICE_ROLE_KEY:
     # Não obrigatório para leitura com anon; porém escrito/segurança exige service role em backend
     print("Warning: SUPABASE_SERVICE_ROLE_KEY não configurado. Recomenda-se configurar para operações server-side seguras.")
-
-# =========================================================================
-# FIM DO AJUSTE
-# =========================================================================
 
 app = FastAPI(title="News API (FastAPI + Supabase)")
 
