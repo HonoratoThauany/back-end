@@ -11,14 +11,10 @@ from datetime import datetime
 
 load_dotenv()
 
-# =========================================================================
-# CORREÇÃO CRÍTICA PARA O DEPLOY NO RENDER: 
-# Adicionando default "" (string vazia) para evitar que o os.getenv retorne None,
-# o que causava um erro de inicialização (f-string com None) no FastAPI e o 404.
-# =========================================================================
-SUPABASE_URL = os.getenv("SUPABASE_URL", "")
-SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY", "")
-SUPABASE_SERVICE_ROLE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY", "")
+
+SUPABASE_URL = os.getenv("SUPABASE_URL", "") 
+SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY", "") 
+SUPABASE_SERVICE_ROLE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY", "") 
 TABLE = os.getenv("TABLE_NEWS", "news")
 
 # As URLs agora podem ser construídas sem falhar, mesmo se SUPABASE_URL for "".
